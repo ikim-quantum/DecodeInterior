@@ -6,7 +6,7 @@
 from state_generator import Circuit
 from decode import SparseDensity
 
-n_q = 8
+n_q = 7
 depth_max = 30
 eps = 0.3
 
@@ -19,6 +19,9 @@ for d in range(depth_max):
     psi = c.run()
     sd = SparseDensity()
     sd.import_from_vec(psi, 0)
+    # Uncomment below if you want to study the behavior for
+    # random states.
+    #sd = SparseDensity.rand(n_q,0)
     itt, theta1, theta2, wt = sd.decode_cost(eps)
     itts.append(itt)
     wts.append(wt)

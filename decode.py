@@ -90,8 +90,7 @@ class SparseDensity():
         Generate a random state over n_q qubits and trace out the last
         n_t qubits.
         """
-        psi = np.random.normal(size=2**n_q)
-        psi += np.random.normal(size=2**n_q) * 1j
+        psi = np.random.normal(size=2**n_q) * 1j + np.random.normal(size=2**n_q)
         psi = psi / np.sqrt(sum(abs(psi)**2))
 
         sd = SparseDensity()
