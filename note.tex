@@ -1,0 +1,96 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, mathtools,amssymb,bbm}
+\usepackage{mathdots}
+\usepackage{mdframed}
+\usepackage[margin=1in]{geometry}
+\usepackage{thm-restate}
+\usepackage{thmtools}
+\usepackage{tikz}
+\usepackage[numbers,comma,sort&compress]{natbib}
+\usepackage{subcaption}
+\usepackage{authblk}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{tcolorbox}
+\usepackage{amsthm}
+\usepackage{caption}
+\usepackage{cases}
+\usepackage{algorithmicx}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{xcolor,soul}
+\usepackage{qcircuit}
+\usepackage[colorinlistoftodos, color=green!40, prependcaption]{todonotes}
+\usepackage{blindtext} 
+\usepackage[pdftex, pdftitle={Article}, pdfauthor={Author}, linktocpage]{hyperref} % For hyperlinks in the PDF
+\hypersetup{
+    colorlinks=true,
+    citecolor=magenta,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=green,
+}
+
+
+
+\bibliographystyle{apsrev4-1}
+\begin{document}
+\title{A note on complexity}
+
+\author{\normalsize Isaac H. Kim\thanks{The University of Sydney}}
+
+\date{\today} 
+\maketitle
+\begin{abstract}
+  We introduce a complexity measure and study its properties.
+\end{abstract}                             
+
+In this note, we consider the following decoding algorithm to map a $n$-qubit state $|\psi\rangle$ to $|0^n\rangle$. At each iteration, we choose a Pauli string $P$ and apply the map $|\psi\rangle \to e^{iP\theta}|\psi\rangle$. We will choose $\theta$ such that the overlap of $e^{iP\theta}|\psi\rangle$ with $|0^{n}\rangle$ is maximized.
+
+The optimal angle can be chosen in a straightforward way, yielding a new overlap:
+\begin{equation}
+  f_{i+1}^2 = \frac{f_i^2 + |e_P|^2 + |f^2 - e_P^2|}{2},
+\end{equation}
+where $f_i$ is the square root of the overlap at the $i$th iteration and $e_P$ is defined as
+\begin{equation}
+  e_P := \langle 0^n| P|\psi\rangle.
+\end{equation}
+Without loss of generality, suppose $e_P =x+ iy$, where $x,y\in \mathbb{R}$. One can prove the following bound:
+\begin{equation}
+  \begin{aligned}
+    f^2 + |e_P|^2 + |f^2-e_P^2| &= f^2 + x^2 + y^2 + |f^2 - (x^2-y^2)-2xyi| \\
+    &= f^2 + x^2 + y^2 + |f^2 - x^2 + y^2| \\
+    &\geq 2(f^2 + y^2).
+  \end{aligned}
+  \label{eq:inequalities}
+ \end{equation}
+ Therefore,
+ \begin{equation}
+   f_{i+1}^2 \geq f_{i}^2 + (\text{Im}[e_P])^2.
+ \end{equation}
+
+ Moreover, by using the fact that $\mathbb{E}_P[P O P] = \frac{\text{Tr}[O] I}{d}$, where $\mathbb{E}_P$ is the average over all the Pauli strings, one can show that
+ \begin{equation}
+   \mathbb{E}_P [(\text{Im}[e_P])^2]  = \frac{1-f_{i}^2}{2d}.
+ \end{equation}
+ Therefore, if we choose $P$ randomly, we get
+ \begin{equation}
+   (1-f_i^2)\left(1-\frac{1}{2d}\right) \geq 1-f_{i+1}^2,
+ \end{equation}
+ leading to the following bound:
+ \begin{equation}
+   1-f_k^2 \leq (1-f_0^2)\left(1-\frac{1}{2d} \right)^k. \label{eq:infidelity_decay}
+ \end{equation}
+Therefore, on average, to approxiamte the target state up to an error of $\epsilon$, it suffices to apply this protocol $2d\ln(1/\epsilon)$ times.
+
+\textbf{Conjecture}: I think in the large $d$ limit Eq.~\eqref{eq:infidelity_decay} holds as an equality (up to $1/d^2$ correction in the large paranthesis). The intuition is that in Eq.~\eqref{eq:inequalities}, we can estimate the $-2xyi$ term. Typically, both $x$ and $y$ scales as $\sim 1/\sqrt{d}$ whereas $f$ becomes order one at some point. In that regime, the effect of $2xyi$ gives an additive contribution to the final line in Eq.~\eqref{eq:infidelity_decay}, which is $\sim x^2y^2\sim 1/d^2$.
+
+
+Let us make a few remarks. First, provided that our conjecture is correct, the expected runtime of $2d\ln (1/\epsilon)$ would be independent of the initial and the final state. Second, we can reduce the number of iterations by choosing the very best $P$. One can modify our argument a bit to show that in such cases we are always guaranteed to obtain an error of $\epsilon$ in $\sim 2d\ln(1/\epsilon)$ iterations. Perhaps this is the best one can do? It will be good to investigate this.
+
+
+\bibliography{bib}
+
+
+
+\end{document}
